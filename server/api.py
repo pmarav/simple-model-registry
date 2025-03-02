@@ -2,6 +2,7 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import os
 import shutil
 import psycopg2
+import json
 
 app = FastAPI()
 UPLOAD_FOLDER = "models"
@@ -44,6 +45,65 @@ async def upload_model(
     connection.close()
     
     return {"message": "Model uploaded successfully", "model": {"name": name, "version": version, "accuracy": accuracy, "filepath": filepath}}
+
+@app.get("/models")
+def get_models():
+    connection = psycopg2.connect(
+    host="localhost",
+    database="modelmetadata",
+    user="psqluser",
+    password="psqluser123!"
+    )
+
+    cursor = connection.cursor()
+
+    query = """
+            SELECT row_to_json(models) FROM models;
+            """
+    
+    cursor.execute(query)
+
+    rows = cursor.fetchall()
+
+    json_output = [row[0] for row in rows]
+
+    print(json_output)
+    print(type(json_output))
+    cursor.close()
+    connection.close()
+
+    return json_output
+
+@app.get("/models/{name}")
+def get_model(name: str):
+    connection = psycopg2.connect(
+    host="localhost",
+    database="modelmetadata",
+    user="psqluser",
+    password="psqluser123!"
+    )
+
+    cursor = connection.cursor()
+
+    query = """
+            SELECT row_to_json(models) FROM models WHERE name=%s;
+            """
+    
+    cursor.execute(query, (name,))
+
+    rows = cursor.fetchall()
+
+    if not rows:
+        raise HTTPException(status_code=404, detail="Model not found")
+    
+    json_output = [row[0] for row in rows]
+
+    print(json_output)
+    print(type(json_output))
+    cursor.close()
+    connection.close()
+
+    return json_output[0]
 
 if __name__ == "__main__":
     import uvicorn
