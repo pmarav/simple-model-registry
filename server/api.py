@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import os
 import shutil
+import psycopg2
 
 app = FastAPI()
 UPLOAD_FOLDER = "models"
@@ -21,6 +22,26 @@ async def upload_model(
     
     with open(filepath, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
+
+    connection = psycopg2.connect(
+    host="localhost",
+    database="modelmetadata",
+    user="psqluser",
+    password="psqluser123!"
+)
+    cursor = connection.cursor()
+
+    query = """
+            INSERT INTO models (name, version, accuracy)
+            VALUES (%s, %s, %s);
+            """
+    
+    data = (name, version, accuracy)
+
+    cursor.execute(query, data)
+    connection.commit()
+    cursor.close()
+    connection.close()
     
     return {"message": "Model uploaded successfully", "model": {"name": name, "version": version, "accuracy": accuracy, "filepath": filepath}}
 
