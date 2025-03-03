@@ -3,3 +3,6 @@ sqlalchemy
 uvicorn
 psycopg2-binary
 python-multipart
+httpx
+pytest
+pytest-asyncio

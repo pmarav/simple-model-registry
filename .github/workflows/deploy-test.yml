@@ -27,8 +27,8 @@ jobs:
           sleep 10  # Adjust if needed
           docker ps -a
 
-      # - name: Run tests inside the server container
-      #   run: docker exec $(docker-compose ps -q server) pytest  # Change to your test command
+      - name: Run tests inside the server container
+        run: docker exec $(docker-compose ps -q server) pytest  # Change to your test command
 
       - name: Stop and clean up Docker Compose
         run: docker compose down
