@@ -1,6 +1,3 @@
--- Create the database (already set in POSTGRES_DB, but just in case)
--- CREATE DATABASE modelmetadata;
-
 -- Connect to the database
 \c modelmetadata;
 

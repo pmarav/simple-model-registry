@@ -9,6 +9,7 @@ DATABASER_USER=os.getenv("DATABASER_USER")
 DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
 DATABASE_HOST=os.getenv("DATABASE_HOST")
 
+# Create directory to save pickle files
 app = FastAPI()
 UPLOAD_FOLDER = "/var/lib/models"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -20,6 +21,7 @@ async def upload_model(
     version: str = Form(...),
     accuracy: float = Form(...)
 ):
+    # Ensure only .pkl files are uploaded
     if not file.filename.endswith(".pkl"):
         raise HTTPException(status_code=400, detail="Only .pkl files are allowed")
     
@@ -29,6 +31,7 @@ async def upload_model(
     with open(filepath, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
+    # Insert the metadata into the database
     connection = psycopg2.connect(
     host=DATABASE_HOST,
     database=DATABASE_NAME,
@@ -53,6 +56,7 @@ async def upload_model(
 
 @app.get("/models")
 def get_models():
+    # Returns a list of dictionaries, where each dictionary contains the metadata of a single model that has been uploaded
     connection = psycopg2.connect(
     host=DATABASE_HOST,
     database=DATABASE_NAME,
