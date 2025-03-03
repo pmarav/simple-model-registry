@@ -3,6 +3,7 @@ import os
 import shutil
 import psycopg2
 
+# Retrieve environment variables
 DATABASE_NAME=os.getenv("DATABASE_NAME")
 DATABASER_USER=os.getenv("DATABASER_USER")
 DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
