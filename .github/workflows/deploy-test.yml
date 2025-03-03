@@ -28,7 +28,7 @@ jobs:
           docker ps -a
 
       - name: Run tests inside the server container
-        run: docker exec $(docker-compose ps -q server) pytest  # Change to your test command
+        run: docker exec $(docker ps -q --filter "name=server") pytest
 
       - name: Stop and clean up Docker Compose
         run: docker compose down
