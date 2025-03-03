@@ -7,16 +7,22 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+    AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+    ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+    ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+    DOCKER_IMAGE_NAME_API: 'api'
+    DOCKERFILE_PATH_API: './server'
+    DOCKER_IMAGE_NAME_DB: 'db'
+    DOCKERFILE_PATH_DB: './database'
+
 jobs:
-  deploy-and-test:
+  test:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
 
       - name: Start Docker Compose services
         run: docker compose up -d --build
@@ -32,3 +38,25 @@ jobs:
 
       - name: Stop and clean up Docker Compose
         run: docker compose down
+
+  build-server-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Azure Container Registry
+        run: |
+          docker login ${{ env.AZURE_CONTAINER_REGISTRY }} -u ${{ env.ACR_USERNAME }} -p ${{ env.ACR_PASSWORD }}
+
+      - name: Build and push image
+        run: |
+          docker build \
+            --progress-plain \
+            --no-cache \
+            ${{ env.DOCKERFILE_PATH_API }} \
+            -t ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME_API }}:latest
+          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME_API }}:latest
+
+      
