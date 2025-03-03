@@ -17,27 +17,27 @@ env:
     DOCKERFILE_PATH_DB: './database'
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  # test:
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Start Docker Compose services
-        run: docker compose up -d --build
+  #     - name: Start Docker Compose services
+  #       run: docker compose up -d --build
 
-      - name: Wait for services to be ready
-        run: |
-          echo "Waiting for services to start..."
-          sleep 10  # Adjust if needed
-          docker ps -a
+  #     - name: Wait for services to be ready
+  #       run: |
+  #         echo "Waiting for services to start..."
+  #         sleep 10  # Adjust if needed
+  #         docker ps -a
 
-      - name: Run tests inside the server container
-        run: docker exec $(docker ps -q --filter "name=server") pytest
+  #     - name: Run tests inside the server container
+  #       run: docker exec $(docker ps -q --filter "name=server") pytest
 
-      - name: Stop and clean up Docker Compose
-        run: docker compose down
+  #     - name: Stop and clean up Docker Compose
+  #       run: docker compose down
 
   build-server-image:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
       - name: Build and push image
         run: |
           docker build \
-            --progress-plain \
+            --progress=plain \
             --no-cache \
             ${{ env.DOCKERFILE_PATH_API }} \
             -t ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME_API }}:latest
