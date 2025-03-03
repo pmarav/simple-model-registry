@@ -10,7 +10,7 @@ DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD")
 DATABASE_HOST=os.getenv("DATABASE_HOST")
 
 app = FastAPI()
-UPLOAD_FOLDER = "models"
+UPLOAD_FOLDER = "/var/lib/models"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.post("/models")

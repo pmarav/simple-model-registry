@@ -8,6 +8,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    volumes:
+      - api_data:/var/lib/models
     depends_on:
       - db
     networks:
@@ -31,3 +33,4 @@ networks:
 
 volumes:
   pg_data:
+  api_data:
