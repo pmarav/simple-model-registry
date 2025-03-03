@@ -41,7 +41,7 @@ jobs:
 
   build-server-image:
     runs-on: ubuntu-latest
-    depends-on: test
+    needs: test
 
     steps:
       - name: Checkout repository
@@ -62,7 +62,7 @@ jobs:
 
   build-db-image:
     runs-on: ubuntu-latest
-    depends-on: test
+    needs: test
 
     steps:
       - name: Checkout repository
