@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 import os
 import shutil
 import psycopg2
-import json
+# import json
 
 app = FastAPI()
 UPLOAD_FOLDER = "models"
@@ -25,7 +25,8 @@ async def upload_model(
         shutil.copyfileobj(file.file, buffer)
 
     connection = psycopg2.connect(
-    host="localhost",
+    host="db",
+
     database="modelmetadata",
     user="psqluser",
     password="psqluser123!"
@@ -49,7 +50,7 @@ async def upload_model(
 @app.get("/models")
 def get_models():
     connection = psycopg2.connect(
-    host="localhost",
+    host="db",
     database="modelmetadata",
     user="psqluser",
     password="psqluser123!"
@@ -77,7 +78,7 @@ def get_models():
 @app.get("/models/{name}")
 def get_model(name: str):
     connection = psycopg2.connect(
-    host="localhost",
+    host="db",
     database="modelmetadata",
     user="psqluser",
     password="psqluser123!"
