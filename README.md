@@ -60,6 +60,25 @@ select * from models;
 ```
 ![image](https://github.com/user-attachments/assets/91f13b21-ae47-465f-9393-a3c0b7d179c8)
 
+# CI/CD
+The CI/CD pipeline that has been created is used for testing the API every time a PR is opened to main or a push is made to main:
+
+![image](https://github.com/user-attachments/assets/1ad349a7-803e-41ee-a5a0-2f24c601e121)
+
+The "test" job runs both the API and the database containers in the GitHub runner using docker compose and then checks the status codes and the return values returned by the endpoints:
+
+![image](https://github.com/user-attachments/assets/8d8c6ac2-dd20-42b2-8795-959486c57d07)
+
+If the "test" job is successful, the second half of the pipeline builds the docker images for both the API and the database and pushes them to an Azure Container Registry:
+
+![image](https://github.com/user-attachments/assets/a875ec94-6ece-4c2d-9be9-4c9473741e02)
+
+
+
+
+
+
+
 
 
 
